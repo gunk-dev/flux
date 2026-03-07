@@ -1,0 +1,16 @@
+{
+  "id": "20260307-1735-075b",
+  "prompt": "Fix the timer UI that's broken on small form factors (mobile). See the screenshot in the issue — the timer widgets are not rendering correctly on small screens. Investigate the CSS for .timer-widget, .timer-section, and related elements in style.css, reproduce the issue, and fix the responsive layout. Make sure it looks good on mobile viewports. Run the full test suite including e2e tests before creating a PR.",
+  "issue": "43",
+  "branch": "agent/20260307-1735-075b",
+  "worktree": "/tmp/klaus-sessions/build/20260307-1735-075b",
+  "tmux_pane": "%54",
+  "budget": "5.00",
+  "log_file": "/home/patrick/.klaus/sessions/session-20260307-1726-938d/logs/20260307-1735-075b.jsonl",
+  "created_at": "2026-03-07T17:35:59-05:00",
+  "cost_usd": 0.9846623999999999,
+  "duration_ms": 199504,
+  "pr_url": "https://github.com/patflynn/build/pull/44",
+  "target_repo": "build",
+  "clone_dir": "/home/patrick/hack/build"
+}
