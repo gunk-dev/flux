@@ -1,0 +1,16 @@
+{
+  "id": "20260307-1728-477c",
+  "prompt": "Review PR #42. Understand what it's doing, check for issues, and provide a thorough review.",
+  "issue": "42",
+  "branch": "agent/20260307-1728-477c",
+  "worktree": "/tmp/klaus-sessions/build/20260307-1728-477c",
+  "tmux_pane": "%52",
+  "budget": "5.00",
+  "log_file": "/home/patrick/.klaus/sessions/session-20260307-1726-938d/logs/20260307-1728-477c.jsonl",
+  "created_at": "2026-03-07T17:29:00-05:00",
+  "cost_usd": 0.4310255000000001,
+  "duration_ms": 122676,
+  "pr_url": null,
+  "target_repo": "build",
+  "clone_dir": "/home/patrick/hack/build"
+}
