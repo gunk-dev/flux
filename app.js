@@ -92,6 +92,13 @@ function loadState() {
   const saved = localStorage.getItem(STATE_KEY);
   if (saved) {
     currentState = JSON.parse(saved);
+    // Validate globalDay: must be a positive integer
+    const day = Number(currentState.globalDay);
+    if (!Number.isInteger(day) || day < 1) {
+      currentState.globalDay = 1;
+    } else {
+      currentState.globalDay = day;
+    }
   } else {
     currentState = {
       globalDay: 1,
@@ -275,6 +282,25 @@ function render() {
       </div>
     `;
 
+    // Build timer section
+    let timerSection = '';
+    const repSeconds = ExerciseTimer.parseSeconds(ex.reps);
+    const restSeconds = ExerciseTimer.parseSeconds(ex.rest);
+    if (repSeconds || restSeconds) {
+      timerSection = '<div class="timer-section">';
+      if (repSeconds) {
+        timerSection += ExerciseTimer.renderTimerHTML(
+          `timer_ex_${currentState.globalDay}_${index}`, repSeconds, 'EXERCISE'
+        );
+      }
+      if (restSeconds) {
+        timerSection += ExerciseTimer.renderTimerHTML(
+          `timer_rest_${currentState.globalDay}_${index}`, restSeconds, 'REST'
+        );
+      }
+      timerSection += '</div>';
+    }
+
     return `
       <div class="exercise${isCompleted ? ' completed' : ''}" data-index="${index}">
         <div class="exercise-header">
@@ -287,6 +313,7 @@ function render() {
           <span><strong>${ex.rest}</strong> rest</span>
         </div>
         ${ex.note ? `<div class="exercise-note">${ex.note}</div>` : ''}
+        ${timerSection}
         ${weightSection}
         ${feedbackSection}
       </div>
@@ -294,6 +321,7 @@ function render() {
   }).join('');
 
   updateProgressBar();
+  ExerciseTimer.initAll();
 }
 
 // Update session progress bar
