@@ -354,6 +354,10 @@ function parseReps(repsStr) {
   return match ? parseInt(match[0]) : 10;
 }
 
+function isValidWeight(weight) {
+  return typeof weight === 'number' && !isNaN(weight);
+}
+
 // Get the last recorded weight for an exercise
 function getLastWeight(exerciseName) {
   const log = loadLog();
@@ -361,7 +365,7 @@ function getLastWeight(exerciseName) {
   let lastDay = 0;
 
   for (const key in log) {
-    if (log[key].exercise === exerciseName && log[key].day > lastDay && typeof log[key].weight === 'number' && !isNaN(log[key].weight)) {
+    if (log[key].exercise === exerciseName && log[key].day > lastDay && isValidWeight(log[key].weight)) {
       lastWeight = log[key].weight;
       lastDay = log[key].day;
     }
@@ -378,7 +382,7 @@ function getSuggestedWeight(exerciseName, startingWeight, increment = 5) {
   // Find last logged weight for this exercise (must have a valid weight)
   let lastEntry = null;
   for (const key in log) {
-    if (log[key].exercise === exerciseName && typeof log[key].weight === 'number' && !isNaN(log[key].weight)) {
+    if (log[key].exercise === exerciseName && isValidWeight(log[key].weight)) {
       if (!lastEntry || log[key].timestamp > lastEntry.timestamp) {
         lastEntry = log[key];
       }
