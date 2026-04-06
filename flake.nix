@@ -21,6 +21,7 @@
             nodejs_20
             nodePackages.serve
             imagemagick
+            nixfmt-rfc-style
             klaus.packages.${system}.default
           ];
 
