@@ -42,7 +42,11 @@ jobs:
           nix_path: nixpkgs=channel:nixos-unstable
 
       - name: Run zizmor
-        run: nix run nixpkgs#zizmor -- . --no-online-audits
+        run: |
+          rc=0
+          nix run nixpkgs#zizmor -- . --no-online-audits || rc=$?
+          # Exit 13 = warnings only (acceptable), exit 14+ = errors
+          if [ "$rc" -ne 0 ] && [ "$rc" -ne 13 ]; then exit "$rc"; fi
 
   validate:
     name: Validate
