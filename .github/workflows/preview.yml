@@ -8,7 +8,7 @@ on:
 jobs:
   deploy-preview:
     name: Deploy Preview
-    if: github.event.action != 'closed'
+    if: github.event.action != 'closed' && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -40,6 +40,9 @@ jobs:
           script: |
             const { owner, repo } = context.repo;
             const prNumber = parseInt(process.env.PR_NUMBER, 10);
+            if (!Number.isInteger(prNumber) || prNumber < 1) {
+              throw new Error('Invalid PR number');
+            }
 
             // Check for existing comment
             const comments = await github.rest.issues.listComments({
@@ -77,7 +80,7 @@ jobs:
             }
 
   trigger-preview:
-    if: github.event.action != 'closed'
+    if: github.event.action != 'closed' && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -92,18 +95,26 @@ jobs:
         with:
           github-token: ${{ secrets.INFRA_DISPATCH_TOKEN }}
           script: |
+            const prNumber = parseInt(process.env.PR_NUMBER, 10);
+            if (!Number.isInteger(prNumber) || prNumber < 1) {
+              throw new Error('Invalid PR number');
+            }
+            const action = process.env.PR_ACTION;
+            if (!['opened', 'synchronize', 'reopened'].includes(action)) {
+              throw new Error('Invalid PR action');
+            }
             await github.rest.repos.createDispatchEvent({
               owner: 'gunk-dev',
               repo: 'infra',
               event_type: 'flux-preview',
               client_payload: {
-                pr_number: process.env.PR_NUMBER,
-                action: process.env.PR_ACTION
+                pr_number: String(prNumber),
+                action: action
               }
             });
 
   cleanup-preview:
-    if: github.event.action == 'closed'
+    if: github.event.action == 'closed' && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -117,11 +128,15 @@ jobs:
         with:
           github-token: ${{ secrets.INFRA_DISPATCH_TOKEN }}
           script: |
+            const prNumber = parseInt(process.env.PR_NUMBER, 10);
+            if (!Number.isInteger(prNumber) || prNumber < 1) {
+              throw new Error('Invalid PR number');
+            }
             await github.rest.repos.createDispatchEvent({
               owner: 'gunk-dev',
               repo: 'infra',
               event_type: 'flux-preview-cleanup',
               client_payload: {
-                pr_number: process.env.PR_NUMBER
+                pr_number: String(prNumber)
               }
             });
