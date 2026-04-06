@@ -42,7 +42,7 @@ Onboard → Generate Program → User Reviews → Execute → Track → Analyze 
 | What | Where | Example |
 |------|-------|---------|
 | Exercise 'KB Gorilla Rows' with video, cues | `data/exercises.json` (app) | `{ "id": "kb-gorilla-rows", "video_id": "Z44y6AgV-TI", ... }` |
-| Schema for a valid program | `data/schema/program.json` (app) | JSON Schema defining phases, workouts, exercise refs |
+| Schemas for all data types | `data/schemas/*.json` (app) | JSON Schemas for exercises, programs, profiles, workout logs |
 | Training principles | `data/principles.json` (app) | Injury prevention rules, mobility requirements |
 | User profile (age, goals, injuries) | `user/profile.json` (user data) | Personal parameters |
 | Personalized program | `user/program.json` (user data) | AI-generated, user-approved |

@@ -12,7 +12,7 @@ The app maintains a canonical exercise catalog. Each exercise has a stable ID an
   "name": "KB Gorilla Rows",
   "muscle_groups": ["back", "biceps"],
   "movement_pattern": "pull",
-  "equipment": ["kettlebell"],
+  "equipment": ["kettlebells"],
   "bilateral": false,
   "video_id": "Z44y6AgV-TI",
   "video_start": 0,
@@ -103,6 +103,17 @@ Programs reference exercises by catalog ID and add user-specific overrides:
   ]
 }
 ```
+
+### Training Principles (App-Owned)
+
+Platform-level rules that constrain all programs, stored in `data/principles.json`:
+
+- Injury prevention protocols (warm-up requirements, contraindicated movements per injury type)
+- Mobility work in every phase
+- Form over load — progression gated on difficulty feedback
+- Longevity mindset — sustainable volume and intensity
+
+These are app invariants, not user preferences. AI-generated programs must respect all active principles.
 
 ## AI Integration Design
 

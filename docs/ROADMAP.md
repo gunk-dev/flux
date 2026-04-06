@@ -4,24 +4,31 @@
 
 Separate the app from user data. Everything else builds on this.
 
-### 1.1 Extract Exercise Catalog
-- Create `data/exercises.json` with stable IDs for all current exercises
-- Each entry: id, name, muscle groups, equipment, video, coaching cues, defaults
-- Related: #11
-
-### 1.2 Define Data Schemas
-- Create JSON schemas for: exercise catalog, user profile, program, workout log
+### 1.1 Define Data Schemas
+- Create JSON schemas for: exercise catalog, user profile, program, workout log, training principles
 - Validation script updated to use schemas
+- Schema-first: define the contract before populating data
 - Related: #4
 
-### 1.3 Separate User Data from App
+### 1.2 Extract Exercise Catalog
+- Create `data/exercises.json` with stable IDs for all current exercises
+- Each entry: id, name, muscle groups, equipment, video, coaching cues, defaults
+- Validate against schema from 1.1
+- Related: #11
+
+### 1.3 Define Training Principles
+- Create `data/principles.json` with platform-level training rules
+- Injury prevention, mobility requirements, form-over-load constraints
+- Validate against schema from 1.1
+
+### 1.4 Separate User Data from App
 - Split current `data/program.json` into:
   - App data: exercise catalog + schemas (checked into repo)
   - User data: profile + program (gitignored `user/` directory)
 - App loads both and merges at runtime
 - Seed `user/` with current program data for backward compatibility
 
-### 1.4 Update App Logic
+### 1.5 Update App Logic
 - `app.js` loads exercise catalog + user program separately
 - Exercise details resolved by ID at render time
 - Update tests (validate.js, e2e) for new structure
