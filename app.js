@@ -455,6 +455,22 @@ function bindEvents() {
     });
   });
 
+  // Export button
+  document.getElementById('export-btn').addEventListener('click', exportData);
+
+  // Import button - trigger file picker
+  document.getElementById('import-btn').addEventListener('click', () => {
+    document.getElementById('import-file').value = '';
+    document.getElementById('import-file').click();
+  });
+
+  // Import file input change
+  document.getElementById('import-file').addEventListener('change', (e) => {
+    if (e.target.files.length > 0) {
+      importData(e.target.files[0]);
+    }
+  });
+
   // Back button
   document.getElementById('back-btn').addEventListener('click', goBack);
 
@@ -777,6 +793,64 @@ function closeVideo() {
 
   container.innerHTML = '';
   modal.classList.add('hidden');
+}
+
+// Export workout data as JSON file
+function exportData() {
+  const log = loadLog();
+  const state = JSON.parse(localStorage.getItem(STATE_KEY) || '{}');
+  const data = { log: log, state: state };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const today = new Date().toISOString().slice(0, 10);
+  a.href = url;
+  a.download = `flux-backup-${today}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// Import workout data from JSON file
+function importData(file) {
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.log || typeof data.log !== 'object') {
+        alert('Invalid backup file: missing log data.');
+        return;
+      }
+
+      const importEntries = Object.keys(data.log);
+      const count = importEntries.length;
+      if (count === 0) {
+        alert('No workout entries found in backup file.');
+        return;
+      }
+
+      if (!confirm(`Import ${count} workout ${count === 1 ? 'entry' : 'entries'}? This will merge with existing data.`)) {
+        return;
+      }
+
+      const existingLog = loadLog();
+      let imported = 0;
+      for (const key of importEntries) {
+        if (!existingLog[key]) {
+          existingLog[key] = data.log[key];
+          imported++;
+        }
+      }
+
+      saveLog(existingLog);
+      render();
+      alert(`Imported ${imported} new ${imported === 1 ? 'entry' : 'entries'}. ${count - imported} already existed.`);
+    } catch (err) {
+      alert('Error reading backup file: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
 }
 
 // Start the app
