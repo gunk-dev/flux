@@ -1,4 +1,4 @@
-name: Deploy Preview
+name: Preview
 
 on:
   pull_request:
@@ -6,137 +6,34 @@ on:
     branches: [main]
 
 jobs:
-  deploy-preview:
-    name: Deploy Preview
+  dispatch-preview:
+    name: Dispatch Preview
     if: github.event.action != 'closed' && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: write
-      pages: write
-      id-token: write
+      pull-requests: read
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - name: Dispatch to infra
+        uses: peter-evans/repository-dispatch@ff45666b9427631e3450c54a1bcbee4d9ff4d7c0 # v3
         with:
-          persist-credentials: false
+          token: ${{ secrets.INFRA_DISPATCH_TOKEN }}
+          repository: gunk-dev/infra
+          event-type: flux-preview
+          client-payload: '{"pr_number": "${{ github.event.pull_request.number }}"}'
 
-      - name: Setup Pages
-        uses: actions/configure-pages@1f0c5cde4bc74cd7e1254d0cb4de8d49e9068c7d # v4
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
-        with:
-          path: '.'
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
-
-      - name: Comment PR with preview link
-        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
-        env:
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        with:
-          script: |
-            const { owner, repo } = context.repo;
-            const prNumber = parseInt(process.env.PR_NUMBER, 10);
-            if (!Number.isInteger(prNumber) || prNumber < 1) {
-              throw new Error('Invalid PR number');
-            }
-
-            // Check for existing comment
-            const comments = await github.rest.issues.listComments({
-              owner,
-              repo,
-              issue_number: prNumber,
-            });
-
-            const botComment = comments.data.find(c =>
-              c.user.type === 'Bot' && c.body.includes('Preview deployment')
-            );
-
-            const body = `## Preview deployment
-
-            Your preview is ready!
-
-            **URL:** https://${owner}.github.io/${repo}/
-
-            _Updated: ${new Date().toISOString()}_`;
-
-            if (botComment) {
-              await github.rest.issues.updateComment({
-                owner,
-                repo,
-                comment_id: botComment.id,
-                body,
-              });
-            } else {
-              await github.rest.issues.createComment({
-                owner,
-                repo,
-                issue_number: prNumber,
-                body,
-              });
-            }
-
-  trigger-preview:
-    if: github.event.action != 'closed' && github.event.pull_request.head.repo.full_name == github.repository
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    env:
-      HAS_INFRA_TOKEN: ${{ secrets.INFRA_DISPATCH_TOKEN != '' }}
-    steps:
-      - uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
-        if: env.HAS_INFRA_TOKEN == 'true'
-        env:
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          PR_ACTION: ${{ github.event.action }}
-        with:
-          github-token: ${{ secrets.INFRA_DISPATCH_TOKEN }}
-          script: |
-            const prNumber = parseInt(process.env.PR_NUMBER, 10);
-            if (!Number.isInteger(prNumber) || prNumber < 1) {
-              throw new Error('Invalid PR number');
-            }
-            const action = process.env.PR_ACTION;
-            if (!['opened', 'synchronize', 'reopened'].includes(action)) {
-              throw new Error('Invalid PR action');
-            }
-            await github.rest.repos.createDispatchEvent({
-              owner: 'gunk-dev',
-              repo: 'infra',
-              event_type: 'flux-preview',
-              client_payload: {
-                pr_number: String(prNumber),
-                action: action
-              }
-            });
-
-  cleanup-preview:
+  dispatch-cleanup:
+    name: Dispatch Preview Cleanup
     if: github.event.action == 'closed' && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    env:
-      HAS_INFRA_TOKEN: ${{ secrets.INFRA_DISPATCH_TOKEN != '' }}
+      pull-requests: read
     steps:
-      - uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
-        if: env.HAS_INFRA_TOKEN == 'true'
-        env:
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+      - name: Dispatch to infra
+        uses: peter-evans/repository-dispatch@ff45666b9427631e3450c54a1bcbee4d9ff4d7c0 # v3
         with:
-          github-token: ${{ secrets.INFRA_DISPATCH_TOKEN }}
-          script: |
-            const prNumber = parseInt(process.env.PR_NUMBER, 10);
-            if (!Number.isInteger(prNumber) || prNumber < 1) {
-              throw new Error('Invalid PR number');
-            }
-            await github.rest.repos.createDispatchEvent({
-              owner: 'gunk-dev',
-              repo: 'infra',
-              event_type: 'flux-preview-cleanup',
-              client_payload: {
-                pr_number: String(prNumber)
-              }
-            });
+          token: ${{ secrets.INFRA_DISPATCH_TOKEN }}
+          repository: gunk-dev/infra
+          event-type: flux-preview-cleanup
+          client-payload: '{"pr_number": "${{ github.event.pull_request.number }}"}'
