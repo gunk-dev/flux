@@ -71,7 +71,7 @@
                 cp $f $out/
               done
               cp -r data $out/
-              echo '{"version":"1.0.0","commit":"${commit}"}' > $out/version.json
+              echo '{"version":"${version}","commit":"${commit}"}' > $out/version.json
             '';
         };
       }

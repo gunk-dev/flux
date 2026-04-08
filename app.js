@@ -45,8 +45,8 @@ async function loadVersion() {
       const commit = data.commit && data.commit !== 'dev' ? ` · ${data.commit}` : '';
       el.textContent = `v${data.version}${commit}`;
     }
-  } catch {
-    // version.json not available (local dev) — ignore
+  } catch (error) {
+    console.warn('Could not load version info:', error);
   }
 }
 
