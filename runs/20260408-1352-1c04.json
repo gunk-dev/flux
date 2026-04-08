@@ -1,0 +1,17 @@
+{
+  "id": "20260408-1352-1c04",
+  "prompt": "Fix mobile layout issue (#58). The screenshot shows two problems on mobile:\n\n1. **Green vertical line on right edge of screen**: The page content is slightly wider than the viewport, causing horizontal overflow. On the cyberpunk theme this manifests as a green line (the accent-colored borders of cards bleeding past the viewport edge). Fix by adding `overflow-x: hidden` to body or html, and ensuring all content respects viewport width.\n\n2. **'suggested' weight text clipped on right**: The `.weight-input` row (style.css:355) is a flex row with no wrapping. On narrow screens, the weight label + controls + input + unit + `.suggested-hint` overflow the card. Fix by making `.weight-input` wrap on mobile, or allowing the suggested hint to flow to the next line.\n\n### Key files:\n- `style.css` — all layout styles, zero media queries currently exist\n- `index.html` — page structure, viewport meta tag on line 5\n\n### What to fix:\n- Add `overflow-x: hidden` on `body` (style.css:121) to prevent horizontal scroll\n- Make `.weight-input` (style.css:355) use `flex-wrap: wrap` so the suggested hint wraps on narrow screens\n- Fix the header's conflicting position declarations: `position: sticky` on line 139 is overridden by `position: relative` on line 142. Remove the `position: relative` line so the header actually sticks on scroll.\n\n### Constraints:\n- Keep changes minimal — this is a bug fix, not a responsive redesign\n- Don't add media queries unless strictly needed for these specific issues\n- Don't change the visual design or theme system\n- Run the existing e2e test suite before creating the PR and fix any failures\n- The app uses Playwright for e2e tests: `npx playwright test`",
+  "issue": "58",
+  "branch": "agent/20260408-1352-1c04",
+  "worktree": "/tmp/klaus-sessions/flux/20260408-1352-1c04",
+  "tmux_pane": "%3",
+  "budget": "5.00",
+  "log_file": "/home/patrick/.klaus/sessions/session-20260407-1651-0aa4/logs/20260408-1352-1c04.jsonl",
+  "created_at": "2026-04-08T13:52:44-04:00",
+  "cost_usd": 0.23691649999999995,
+  "duration_ms": 57038,
+  "pr_url": "https://github.com/gunk-dev/flux/pull/59",
+  "target_repo": "flux",
+  "clone_dir": "/home/patrick/hack/flux",
+  "session_name": "20260408-1352-1c04"
+}
