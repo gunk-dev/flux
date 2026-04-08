@@ -126,7 +126,6 @@ body {
   display: flex;
   flex-direction: column;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
 }
 
 /* =============================================
@@ -291,6 +290,7 @@ main {
 
 .exercise-details {
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   font-size: 1rem;
   color: var(--text-secondary);
