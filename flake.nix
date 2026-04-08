@@ -61,13 +61,18 @@
           version = "1.0.0";
           src = ./.;
 
-          installPhase = ''
-            mkdir -p $out
-            for f in index.html style.css app.js timer.js manifest.json; do
-              cp $f $out/
-            done
-            cp -r data $out/
-          '';
+          installPhase =
+            let
+              commit = self.shortRev or "dev";
+            in
+            ''
+              mkdir -p $out
+              for f in index.html style.css app.js timer.js manifest.json; do
+                cp $f $out/
+              done
+              cp -r data $out/
+              echo '{"version":"1.0.0","commit":"${commit}"}' > $out/version.json
+            '';
         };
       }
     );
