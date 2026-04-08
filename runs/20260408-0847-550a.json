@@ -1,0 +1,19 @@
+{
+  "id": "20260408-0847-550a",
+  "prompt": "CI is failing on PR #57. Diagnose the failures and push fixes. Check `gh pr checks 57` for details and `gh run view \u003crun-id\u003e --log-failed` for error output.",
+  "issue": null,
+  "pr": "57",
+  "branch": "agent/20260408-0844-2051",
+  "worktree": "/tmp/klaus-sessions/flux/20260408-0847-550a",
+  "tmux_pane": "%29",
+  "budget": "5.00",
+  "log_file": "/home/patrick/.klaus/sessions/session-20260407-1651-0aa4/logs/20260408-0847-550a.jsonl",
+  "created_at": "2026-04-08T08:47:39-04:00",
+  "cost_usd": 0.9200794999999997,
+  "duration_ms": 383785,
+  "pr_url": "https://github.com/org/repo/pull/123",
+  "type": "pr-fix",
+  "target_repo": "flux",
+  "clone_dir": "/home/patrick/hack/flux",
+  "session_name": "20260408-0847-550a"
+}
