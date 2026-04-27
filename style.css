@@ -708,65 +708,8 @@ footer {
   text-transform: uppercase;
 }
 
-/* Profile editor */
-.profile-section {
-  margin-bottom: 18px;
-}
-
-.profile-section-label {
-  display: block;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--text-tertiary);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  margin-bottom: 12px;
-}
-
-.profile-fields {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.profile-row label {
-  display: block;
-  font-family: var(--font-mono);
-  font-size: 9px;
-  color: var(--text-tertiary);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 4px;
-}
-
-.profile-row input {
-  width: 100%;
-  background: var(--bg-primary);
-  border: 1px solid var(--border-2);
-  border-radius: 6px;
-  color: var(--text-primary);
-  padding: 8px 10px;
-  font-family: var(--font-sans);
-  font-size: 13px;
-  transition: border-color var(--transition);
-}
-
-.profile-row input:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent) 20%, transparent);
-}
-
-.profile-row-pair {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
 /* Mode toggle */
 .mode-toggle-section {
-  border-top: 1px solid var(--border);
-  padding-top: 16px;
   margin-top: 4px;
 }
 
