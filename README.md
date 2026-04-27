@@ -41,7 +41,7 @@ npx playwright test
 
 ```
 ├── index.html      # App shell
-├── style.css       # Theme styles (light + dark)
+├── style.css       # Theme styles
 ├── app.js          # Core logic
 ├── data/
 │   └── program.json   # Workout program data
