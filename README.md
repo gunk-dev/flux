@@ -2,7 +2,7 @@
 
 A static, mobile-first PWA to track and execute on a fitness goal.
 
-**Live App:** https://patflynn.github.io/flux/
+**Live App:** https://flux.gunk.dev
 
 ## Features
 
@@ -16,8 +16,8 @@ A static, mobile-first PWA to track and execute on a fitness goal.
 ## Stack
 
 - Vanilla HTML/JS/CSS
-- No build step required
-- Designed for static hosting (NixOS, GitHub Pages)
+- No build step required for local development
+- Production deploys to fly.io via the gunk-dev preview/prod pipeline; PRs get preview deployments at `https://flux-preview-<PR>.fly.dev/` via the Deploy Flux Preview workflow
 
 ## Development
 
@@ -41,7 +41,7 @@ npx playwright test
 
 ```
 ├── index.html      # App shell
-├── style.css       # Dark theme styles
+├── style.css       # Theme styles (light + dark)
 ├── app.js          # Core logic
 ├── data/
 │   └── program.json   # Workout program data
