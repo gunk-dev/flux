@@ -1,0 +1,17 @@
+{
+  "id": "20260427-0627-dce1",
+  "prompt": "Update README.md to reflect current state. The README is out of date in several ways:\n\n## Changes needed\n\n1. **Live App URL** (line 5): change `https://patflynn.github.io/flux/` to `https://flux.gunk.dev`. Production is now hosted on fly.io with that custom domain (configured in infra/apps/flux/prod.cue).\n\n2. **Aesthetic description** (under Features): we just dropped the multi-theme picker (cyberpunk/material/ocean/ember) in favor of a single coherent dark/light design with oklch colors (see merged PR #61). Replace 'Dark mode cyberpunk/terminal aesthetic' with something accurate, e.g. 'Light and dark modes with a clean, modern UI'.\n\n3. **Stack section**: 'Designed for static hosting (NixOS, GitHub Pages)' is outdated. Production now deploys to fly.io via the gunk-dev preview/prod pipeline (infra repo dispatches build to armstrong's reusable workflow). Update to mention fly.io as the production host while keeping that local dev still works without a build step (still pure-static during dev).\n\n4. Optionally add a one-line note that PRs get preview deployments at https://flux-preview-\u003cPR\u003e.fly.dev/ via the Deploy Flux Preview workflow.\n\n## Out of scope\n\n- Don't touch the Development or Project Structure sections unless they're factually wrong (skim them; they look current to me but check that the file paths actually exist).\n- Don't add new features lists or restructure.\n\n## Acceptance\n\n- README.md updated with the four changes above.\n- Spot-check by reading the file end-to-end after editing — make sure nothing else is stale.\n- PR title: 'docs: refresh README — fly.io URL, drop multi-theme blurb'\n- PR body: brief list of what changed and why.",
+  "issue": null,
+  "branch": "agent/20260427-0627-dce1",
+  "worktree": "/tmp/klaus-sessions/flux/20260427-0627-dce1",
+  "tmux_pane": "%4",
+  "budget": "5.00",
+  "log_file": "/home/patrick/.klaus/sessions/session-20260424-1649-723e/logs/20260427-0627-dce1.jsonl",
+  "created_at": "2026-04-27T06:27:36-04:00",
+  "cost_usd": 0.35554100000000005,
+  "duration_ms": 137638,
+  "pr_url": "https://github.com/gunk-dev/flux/pull/63",
+  "target_repo": "flux",
+  "clone_dir": "/home/patrick/hack/flux",
+  "session_name": "20260427-0627-dce1"
+}
