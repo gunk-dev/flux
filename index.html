@@ -10,13 +10,15 @@
 
   <script>
     (function() {
-      var theme = localStorage.getItem('basement_lab_theme') || 'cyberpunk';
       var mode = localStorage.getItem('basement_lab_mode') ||
         (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
-      document.documentElement.setAttribute('data-theme', theme);
       document.documentElement.setAttribute('data-mode', mode);
+      try { localStorage.removeItem('basement_lab_theme'); } catch (e) {}
     })();
   </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="style.css">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" sizes="32x32" href="data/favicon-32.png">
@@ -64,59 +66,6 @@
   <div id="settings-modal" class="settings-modal hidden">
     <div class="settings-content">
       <h3 class="settings-title">SETTINGS</h3>
-      <div class="theme-grid">
-        <div class="theme-option" data-theme="cyberpunk">
-          <div class="theme-swatch"></div>
-          <div class="theme-name">Cyberpunk</div>
-        </div>
-        <div class="theme-option" data-theme="material">
-          <div class="theme-swatch"></div>
-          <div class="theme-name">Material</div>
-        </div>
-        <div class="theme-option" data-theme="ocean">
-          <div class="theme-swatch"></div>
-          <div class="theme-name">Ocean</div>
-        </div>
-        <div class="theme-option" data-theme="ember">
-          <div class="theme-swatch"></div>
-          <div class="theme-name">Ember</div>
-        </div>
-      </div>
-      <div class="profile-section">
-        <span class="profile-section-label">Profile</span>
-        <div class="profile-fields">
-          <div class="profile-row">
-            <label for="profile-name">Name</label>
-            <input type="text" id="profile-name" class="profile-field" data-profile-key="name" placeholder="Your name">
-          </div>
-          <div class="profile-row">
-            <label for="profile-goal">Goal</label>
-            <input type="text" id="profile-goal" class="profile-field" data-profile-key="goal" placeholder="Your goal">
-          </div>
-          <div class="profile-row profile-row-pair">
-            <div>
-              <label for="profile-age">Age</label>
-              <input type="number" id="profile-age" class="profile-field" data-profile-key="age" placeholder="—" min="1" max="120">
-            </div>
-            <div>
-              <label for="profile-days">Days/week</label>
-              <input type="number" id="profile-days" class="profile-field" data-profile-key="days_per_week" placeholder="—" min="1" max="7">
-            </div>
-          </div>
-          <div class="profile-row">
-            <label for="profile-time">Time available</label>
-            <input type="text" id="profile-time" class="profile-field" data-profile-key="time_available" placeholder="e.g. 60min">
-          </div>
-          <div class="profile-row">
-            <label for="profile-injuries">Injury history</label>
-            <input type="text" id="profile-injuries" class="profile-field" data-profile-key="injury_history" placeholder="e.g. neck, lower back">
-          </div>
-          <div class="profile-row">
-            <label for="profile-equipment">Equipment</label>
-            <input type="text" id="profile-equipment" class="profile-field" data-profile-key="equipment" placeholder="e.g. kettlebells, pullup bar">
-          </div>
-        </div>
-      </div>
       <div class="mode-toggle-section">
         <div class="mode-toggle-row">
           <span class="mode-label">Appearance</span>
