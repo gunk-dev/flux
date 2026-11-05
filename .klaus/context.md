@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Flux is the umbrella app that implements the workouts surface directly, shipping as a web PWA and a single Android APK with three launcher aliases (Workouts, Meditate, Check-in). Meditate and Check-in are placeholder tabs whose primary apps live elsewhere (per `CLAUDE.md`: `vibe` for meditation, `gunk-dev/balance` for check-ins). An optional LLM provider can generate workout programs from the user's equipment inventory.
+Flux is the umbrella app that implements the workouts surface directly, shipping as a web PWA and a single Android APK with three launcher aliases (Workouts, Meditate, Check-in). Meditate and Check-in are placeholder tabs whose primary apps live elsewhere (per `AGENTS.md`: `vibe` for meditation, `gunk-dev/balance` for check-ins). An optional LLM provider can generate workout programs from the user's equipment inventory.
 
 ## Tech stack
 
@@ -42,11 +42,11 @@ Flux is the umbrella app that implements the workouts surface directly, shipping
 - `docs/` — `DESIGN.md`, `VISION.md`, `ROADMAP.md`, `UMBRELLA-PLAN.md` (product intent / multi-app plan).
 - `.github/workflows/` — `test.yml` (nix-lint, zizmor, build, build-android, catalog-validation, e2e), `preview.yml`, `staging.yml`.
 - `flake.nix`, `flake.lock`, `.envrc` — nix environment.
-- `PLAN.md`, `README.md`, `CLAUDE.md` — top-level docs.
+- `PLAN.md`, `README.md`, `AGENTS.md` — top-level docs.
 
 ## Build, test, run
 
-All commands run inside `nix develop` (mandatory per `CLAUDE.md`).
+All commands run inside `nix develop` (mandatory per `AGENTS.md`).
 
 - Install deps: `nix develop --command npm ci`
 - Dev server (Vite on `:3030`): `nix develop --command npm run dev`
@@ -64,7 +64,7 @@ All commands run inside `nix develop` (mandatory per `CLAUDE.md`).
 - IndexedDB access goes through the small wrapper in `src/db/idb.ts`; per-tab DBs (e.g. `flux-db` for Workouts) declare their schema in their own `state.ts` via `openDb(...)`. Bump `DB_VERSION` and add the store to the `stores` array to migrate — the `onupgradeneeded` handler in `openDb` creates any missing stores.
 - The exercise catalog is the source of truth for exercises; CI (`Catalog Validation` job) enforces it via `scripts/validate-catalog.ts`. IDs must match `/^[a-z0-9]+(?:-[a-z0-9]+)*$/`.
 - No router and no global state library — tab routing lives in `src/App.tsx` (`useState<TabKey>`), state is colocated in tab modules with IDB persistence.
-- Per `CLAUDE.md`: never reference Claude/AI in commits or PRs; never push to `main` directly; never merge PRs (the user merges); always use nix shells, not bare `npm install`.
+- Per `AGENTS.md`: never mention AI tools in commits or PRs; never push to `main` directly; never merge PRs (the user merges); always use nix shells, not bare `npm install`.
 
 ## Gotchas
 

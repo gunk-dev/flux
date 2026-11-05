@@ -16,7 +16,7 @@ for product intent.
 
 ## Development
 
-All commands run inside `nix develop` (nix is mandatory per `CLAUDE.md`):
+All commands run inside `nix develop` (nix is mandatory per `AGENTS.md`):
 
 ```bash
 nix develop --command npm ci          # install deps
