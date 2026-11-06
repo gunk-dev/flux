@@ -87,6 +87,10 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3
+        with:
+          # The action's default also installs the legacy 'tools' package,
+          # which current sdkmanager no longer offers.
+          packages: 'platform-tools'
 
       - name: Install deps and sync Capacitor
         run: |
