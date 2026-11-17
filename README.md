@@ -30,6 +30,20 @@ E2E tests use a separate shell that ships Playwright browsers:
 nix develop .#test --command npx playwright test
 ```
 
+## Checks
+
+Every test CI runs on a pull request, except the Android APK build, is also
+a flake check. Each one builds in the nix sandbox, so it needs no network or
+secrets. Build one check at a time on x86_64-linux:
+
+```bash
+nix build -L .#checks.x86_64-linux.build     # typecheck + production bundle
+nix build -L .#checks.x86_64-linux.catalog   # exercise catalog validation
+nix build -L .#checks.x86_64-linux.e2e       # Playwright tests (chromium)
+nix build -L .#checks.x86_64-linux.fmt       # nixfmt --check
+nix build -L .#checks.x86_64-linux.zizmor    # GitHub Actions audit
+```
+
 ## Android
 
 The `android` dev shell provides JDK 17, gradle, and the Android SDK

@@ -21,6 +21,47 @@
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
+
+        src = ./.;
+        commit = self.shortRev or self.dirtyShortRev or "dev";
+        ver = "1.0.0";
+        versionJSON = builtins.toJSON {
+          version = ver;
+          inherit commit;
+        };
+
+        # Fetched once and shared by the package and every npm-based check.
+        # Run `prefetch-npm-deps package-lock.json` to refresh the hash after
+        # dependency changes.
+        npmDeps = pkgs.fetchNpmDeps {
+          name = "flux-${ver}-npm-deps";
+          inherit src;
+          hash = "sha256-tUu8eZlrVL+sABAW5mddztGoz80GzCDNA1vCSptOZaE=";
+        };
+
+        # Capacitor's optional Android peer dep tries to run a gradle task
+        # in postinstall; skip it since we only ship the web bundle here.
+        npmFlags = [ "--ignore-scripts" ];
+
+        # A check that installs node_modules from npmDeps and runs `script`;
+        # other attributes pass through to the derivation.
+        npmCheck =
+          name: attrs:
+          pkgs.buildNpmPackage (
+            builtins.removeAttrs attrs [ "script" ]
+            // {
+              pname = "flux-${name}";
+              version = ver;
+              inherit src npmDeps npmFlags;
+              dontNpmBuild = true;
+              buildPhase = ''
+                runHook preBuild
+                ${attrs.script}
+                runHook postBuild
+              '';
+              installPhase = "touch $out";
+            }
+          );
       in
       {
         devShells.default = pkgs.mkShell {
@@ -99,38 +140,57 @@
             '';
           };
 
-        packages.default =
-          let
-            commit = self.shortRev or self.dirtyShortRev or "dev";
-            ver = "1.0.0";
-            versionJSON = builtins.toJSON {
-              version = ver;
-              inherit commit;
-            };
-          in
-          pkgs.buildNpmPackage {
-            pname = "flux";
-            version = ver;
-            src = ./.;
+        packages.default = pkgs.buildNpmPackage {
+          pname = "flux";
+          version = ver;
+          inherit src npmDeps npmFlags;
 
-            # Run `prefetch-npm-deps package-lock.json` to refresh after
-            # dependency changes. Lockfile-derived hash; updates when the
-            # lockfile changes.
-            npmDepsHash = "sha256-tUu8eZlrVL+sABAW5mddztGoz80GzCDNA1vCSptOZaE=";
+          installPhase = ''
+            runHook preInstall
+            npm run build
+            mkdir -p $out
+            cp -r dist/* $out/
+            echo '${versionJSON}' > $out/version.json
+            runHook postInstall
+          '';
+        };
 
-            # Capacitor's optional Android peer dep tries to run a gradle task
-            # in postinstall; skip it since we only ship the web bundle here.
-            npmFlags = [ "--ignore-scripts" ];
+        # Everything the Test workflow proves on a pull request, runnable
+        # without network or secrets. Built only on x86_64-linux.
+        checks = pkgs.lib.optionalAttrs (system == "x86_64-linux") {
+          # Typecheck and production bundle (`tsc -b && vite build`).
+          build = self.packages.${system}.default;
 
-            installPhase = ''
-              runHook preInstall
-              npm run build
-              mkdir -p $out
-              cp -r dist/* $out/
-              echo '${versionJSON}' > $out/version.json
-              runHook postInstall
-            '';
+          catalog = npmCheck "catalog" { script = "npm run validate-catalog"; };
+
+          e2e = npmCheck "e2e" {
+            PLAYWRIGHT_BROWSERS_PATH = pkgs.playwright-driver.browsers;
+            PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "1";
+            # The sandbox has no /etc/fonts; without a fontconfig file Chromium
+            # aborts the first time it needs a fallback font.
+            FONTCONFIG_FILE = pkgs.makeFontsConf { fontDirectories = [ pkgs.dejavu_fonts ]; };
+            # Same Playwright settings as CI (forbid test.only, retries, one
+            # worker), with a reporter that prints progress to the build log.
+            CI = "1";
+            script = "npx playwright test --project=chromium --reporter=list";
           };
+
+          fmt = pkgs.runCommand "flux-fmt" { nativeBuildInputs = [ pkgs.nixfmt ]; } ''
+            cd ${src}
+            nixfmt --check .
+            touch $out
+          '';
+
+          zizmor = pkgs.runCommand "flux-zizmor" { nativeBuildInputs = [ pkgs.zizmor ]; } ''
+            export HOME=$TMPDIR
+            cd ${src}
+            rc=0
+            zizmor . --no-online-audits || rc=$?
+            # Exit 13 = warnings only (acceptable), as in the Test workflow.
+            if [ "$rc" -ne 0 ] && [ "$rc" -ne 13 ]; then exit "$rc"; fi
+            touch $out
+          '';
+        };
       }
     );
 }
