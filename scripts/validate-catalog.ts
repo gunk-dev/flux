@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 // Validates the static exercise catalog (src/data/exerciseCatalog.ts) which
-// ships as the source of truth for every exercise Flux knows about. Wired
-// into the `Catalog Validation` CI job — see .github/workflows/test.yml.
+// ships as the source of truth for every exercise Flux knows about. Run by
+// the `catalog` flake check (flake.nix).
 
 import { EXERCISE_CATALOG } from '../src/data/exerciseCatalog';
 import { EQUIPMENT_CATALOG } from '../src/data/equipmentCatalog';

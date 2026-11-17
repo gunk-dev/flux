@@ -18,11 +18,9 @@ jobs:
           persist-credentials: false
 
       - uses: cachix/install-nix-action@08dcb3a5e62fa31e2da3d490afc4176ef55ecd72 # v30
-        with:
-          nix_path: nixpkgs=channel:nixos-unstable
 
       - name: Check formatting
-        run: nix run nixpkgs#nixfmt -- --check .
+        run: nix build -L .#checks.x86_64-linux.fmt
 
   zizmor:
     name: Zizmor
@@ -35,15 +33,9 @@ jobs:
           persist-credentials: false
 
       - uses: cachix/install-nix-action@08dcb3a5e62fa31e2da3d490afc4176ef55ecd72 # v30
-        with:
-          nix_path: nixpkgs=channel:nixos-unstable
 
       - name: Run zizmor
-        run: |
-          rc=0
-          nix run nixpkgs#zizmor -- . --no-online-audits || rc=$?
-          # Exit 13 = warnings only (acceptable), exit 14+ = errors
-          if [ "$rc" -ne 0 ] && [ "$rc" -ne 13 ]; then exit "$rc"; fi
+        run: nix build -L .#checks.x86_64-linux.zizmor
 
   build:
     name: Build
@@ -62,7 +54,7 @@ jobs:
         uses: DeterminateSystems/magic-nix-cache-action@1828eb4e5414b8dfe36daae53ea3e4b8c3fdec7a # main
 
       - name: Build production bundle
-        run: nix develop --command bash -c "npm ci && npm run build"
+        run: nix build -L .#checks.x86_64-linux.build
 
   build-android:
     name: Build Android (debug)
@@ -127,7 +119,7 @@ jobs:
         uses: DeterminateSystems/magic-nix-cache-action@1828eb4e5414b8dfe36daae53ea3e4b8c3fdec7a # main
 
       - name: Validate exercise catalog
-        run: nix develop --command bash -c "npm ci && npm run validate-catalog"
+        run: nix build -L .#checks.x86_64-linux.catalog
 
   e2e:
     name: E2E Tests
